@@ -20,7 +20,7 @@ dependencies:
   web_socket_channel: ^3.0.0
   # Solo `package:proteus/visor.dart`: la grabación en Dart puro.
   proteus:
-    path: ..
+    path: ../proteus
 
 dev_dependencies:
   flutter_test:
