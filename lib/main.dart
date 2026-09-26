@@ -169,8 +169,17 @@ class _PantallaVisorState extends State<PantallaVisor> {
       // recibido; si jev o el teatro tardan, se espera en el borde.
       final borde = g.duracion;
       if (_seguirBorde) {
-        _t = math.min(_t + dt, borde);
-        if (_t < borde - 1.5) _t = borde - 0.35;
+        // Medio segundo de colchón: jev manda los cuadros en ráfagas cada
+        // ~250 ms (picos de 350); con menos, el visor alcanzaba el borde y
+        // titubeaba. Nunca retrocede; si se queda muy atrás, salta.
+        final meta = borde - 0.5;
+        if (_t < meta - 1.5) {
+          _t = meta;
+        } else if (_t + dt <= meta) {
+          _t += dt;
+        } else if (_t < meta) {
+          _t = meta;
+        }
       } else if (_reproduciendo) {
         _t = math.min(_t + dt * _velocidad, borde);
       }
