@@ -1,0 +1,33 @@
+name: proteus_visor
+description: >-
+  Visor 3D de la Proteus: reproduce las grabaciones de la simulación de
+  consola con flutter_scene (el suelo pintado por temperatura, las rocas, el
+  alimento, la ameba con sus pseudópodos y la narrativa del teatro).
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.10.0
+  # flutter_scene 0.22 exige el primer estable con el Flutter GPU que usa.
+  flutter: '>=3.47.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # El de pub.dev, como en el spike de Nairda (el fork de Nairda no se toca).
+  flutter_scene: ^0.22.2
+  vector_math: ^2.2.0
+  # Solo `package:proteus/visor.dart`: la grabación en Dart puro.
+  proteus:
+    path: ..
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    # `- assets/` no incluye subdirectorios (trampa medida en Nairda).
+    - assets/grabaciones/
