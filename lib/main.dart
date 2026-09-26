@@ -15,7 +15,7 @@ import 'en_vivo.dart';
 import 'escena_proteus.dart';
 
 const _entradaVivo = EntradaIndice('__vivo__',
-    '🔴 Live: the simulation is running right now', '');
+    '🔴 En vivo: la simulación corre ahora mismo', '');
 
 void main() => runApp(const VisorApp());
 
@@ -263,8 +263,8 @@ class _PantallaVisorState extends State<PantallaVisor> {
           else
             Center(
                 child: Text(_recursosListos
-                    ? 'Loading recording…'
-                    : 'Preparing the 3D scene…')),
+                    ? 'Cargando grabación…'
+                    : 'Preparando la escena 3D…')),
           if (g != null) ..._hud(context, g),
         ]),
       ),
@@ -323,13 +323,13 @@ class _PantallaVisorState extends State<PantallaVisor> {
                   Text('t = ${_t.toStringAsFixed(1)} s',
                       style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 6),
-                  _Barra('Energy', c.energia, const Color(0xFF8BC34A)),
+                  _Barra('Energía', c.energia, const Color(0xFF8BC34A)),
                   _BarraTemperatura(c.temperatura),
-                  _Barra('Integrity', c.integridad, const Color(0xFF4FC3F7)),
+                  _Barra('Integridad', c.integridad, const Color(0xFF4FC3F7)),
                   _Barra('Homeostasis', c.homeostasis, const Color(0xFFCE93D8)),
                   const SizedBox(height: 6),
                   Row(children: [
-                    const Text('Pseudopods: ',
+                    const Text('Pseudópodos: ',
                         style: TextStyle(color: Colors.white70)),
                     Flexible(
                       child: Chip(
@@ -364,12 +364,12 @@ class _PantallaVisorState extends State<PantallaVisor> {
             if (muerta)
               _Panel(
                 color: const Color(0xCC7A1F1F),
-                child: Text('Died of ${_causa(g.causaDeMuerte)} after '
+                child: Text('Murió de ${g.causaDeMuerte} a los '
                     '${g.duracion.toStringAsFixed(0)} s'),
               ),
             if (_modoVivo && (_vivo?.teatroPensando ?? false))
               const _Panel(
-                child: Text('🎭 the theatre is writing…',
+                child: Text('🎭 el teatro está escribiendo…',
                     style: TextStyle(color: Colors.white70)),
               ),
             AnimatedSwitcher(
@@ -418,7 +418,7 @@ class _PantallaVisorState extends State<PantallaVisor> {
                       _seguirBorde = true;
                       _reproduciendo = true;
                     }),
-                    child: Text(_seguirBorde ? '● live' : '⏩ go live',
+                    child: Text(_seguirBorde ? '● vivo' : '⏩ al vivo',
                         style: TextStyle(
                             color: _seguirBorde ? Colors.redAccent : null)),
                   ),
@@ -448,18 +448,18 @@ class _PantallaVisorState extends State<PantallaVisor> {
     if (v.publico) {
       final String texto;
       if (!v.conectado) {
-        texto = 'No connection to the server. The recordings are still in the '
-            'list above.';
+        texto = 'Sin conexión con el servidor. Las grabaciones siguen en la '
+            'lista de arriba.';
       } else if (v.agotado && !corriendo) {
-        texto = 'The live amoeba is resting until tomorrow: every minute costs '
-            'calls to jev and DeepSeek. Meanwhile, pick a recording from the '
-            'list above.';
+        texto = 'La ameba en vivo descansa hasta mañana: cada minuto cuesta '
+            'llamadas a jev y a DeepSeek. Mientras, elige una grabación en la '
+            'lista de arriba.';
       } else if (!corriendo) {
-        texto = 'Preparing the next amoeba…';
+        texto = 'Preparando la siguiente ameba…';
       } else {
-        texto = 'Live demo: the amoeba is running on a server right now. jev '
-            'decides every move and DeepSeek narrates its state. Everyone who '
-            'opens this page watches the same amoeba.';
+        texto = 'Demo en vivo: la ameba corre ahora en un servidor. jev decide '
+            'cada movimiento y DeepSeek narra su estado. Todos los que entran '
+            'ven la misma ameba.';
       }
       return _Panel(
           child: Text(texto, style: const TextStyle(color: Colors.white70)));
@@ -488,7 +488,7 @@ class _PantallaVisorState extends State<PantallaVisor> {
             underline: const SizedBox.shrink(),
             items: [
               for (var i = 1; i <= 15; i++)
-                DropdownMenuItem(value: i, child: Text('seed $i')),
+                DropdownMenuItem(value: i, child: Text('semilla $i')),
             ],
             onChanged: corriendo
                 ? null
@@ -515,12 +515,12 @@ class _PantallaVisorState extends State<PantallaVisor> {
                 ? null
                 : () => v.iniciar(_cerebroVivo, _semillaVivo, _segundosVivo),
             icon: const Icon(Icons.play_arrow),
-            label: Text(corriendo ? 'running…' : 'Start'),
+            label: Text(corriendo ? 'corriendo…' : 'Iniciar'),
           ),
           if (!v.conectado)
-            const Text('no connection', style: TextStyle(color: Colors.redAccent)),
+            const Text('sin conexión', style: TextStyle(color: Colors.redAccent)),
           if (v.g == null && !corriendo)
-            const Text('pick and press Start',
+            const Text('elige y pulsa Iniciar',
                 style: TextStyle(color: Colors.white70)),
         ],
       ),
@@ -528,12 +528,12 @@ class _PantallaVisorState extends State<PantallaVisor> {
   }
 
   static String _nombreAccion(Accion a) => switch (a) {
-        Accion.avanzar => 'forward',
-        Accion.girarIzquierda => 'turn ←',
-        Accion.girarDerecha => 'turn →',
-        Accion.retroceder => 'back up',
-        Accion.quieto => 'still',
-        Accion.comer => 'eat 🍽',
+        Accion.avanzar => 'avanzar',
+        Accion.girarIzquierda => 'girar ←',
+        Accion.girarDerecha => 'girar →',
+        Accion.retroceder => 'retroceder',
+        Accion.quieto => 'quieta',
+        Accion.comer => 'comer 🍽',
       };
 }
 
@@ -552,8 +552,8 @@ class _PanelDado extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
             d.probabilidades.isEmpty
-                ? '🎲 decision (no die)'
-                : '🎲 jev\'s die · ${d.ms} ms',
+                ? '🎲 decisión (sin dado)'
+                : '🎲 el dado de jev · ${d.ms} ms',
             style: const TextStyle(fontSize: 12, color: Colors.white70)),
         const SizedBox(height: 4),
         for (final a in orden)
@@ -564,7 +564,7 @@ class _PanelDado extends StatelessWidget {
                 SizedBox(
                   width: 92,
                   child: Text(
-                    '${a.id == d.accion ? '▶ ' : ''}${_accionIngles(a.id)}',
+                    '${a.id == d.accion ? '▶ ' : ''}${a.id.replaceAll('_', ' ')}',
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 11,
@@ -598,7 +598,7 @@ class _PanelDado extends StatelessWidget {
               ]),
             ),
         if (d.ganadora != null && d.ganadora != d.accion)
-          Text('the favourite was ${_accionIngles(d.ganadora!)}; the die chose another',
+          Text('la ganadora era ${d.ganadora!.replaceAll('_', ' ')}; salió otra',
               style: const TextStyle(fontSize: 10, color: Colors.white54)),
       ]),
     );
@@ -663,7 +663,7 @@ class _BarraTemperatura extends StatelessWidget {
       child: Row(children: [
         const SizedBox(
             width: 92,
-            child: Text('Temperature',
+            child: Text('Temperatura',
                 style: TextStyle(fontSize: 12, color: Colors.white70))),
         Expanded(
           child: LayoutBuilder(builder: (context, box) {
@@ -703,22 +703,3 @@ class _BarraTemperatura extends StatelessWidget {
     );
   }
 }
-
-/// The simulation core names things in Spanish; the viewer speaks English.
-String _accionIngles(String id) => switch (id) {
-      'avanzar' => 'forward',
-      'girar_izquierda' => 'turn left',
-      'girar_derecha' => 'turn right',
-      'retroceder' => 'back up',
-      'quieto' => 'still',
-      'comer' => 'eat',
-      _ => id.replaceAll('_', ' '),
-    };
-
-String _causa(String? c) => switch (c) {
-      'inanición' => 'starvation',
-      'aplastamiento' => 'crushing',
-      'calor' => 'heat',
-      'frío' => 'cold',
-      _ => c ?? '?',
-    };

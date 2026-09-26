@@ -1,12 +1,4 @@
 [
-  {
-    "archivo": "teatro-m-s3.json",
-    "titulo": "teatro-m · seed 3 (jev + narrative, loaded die)",
-    "detalle": ""
-  },
-  {
-    "archivo": "reflejo-s5.json",
-    "titulo": "reflex · seed 5 (no AI, baseline)",
-    "detalle": ""
-  }
+  {"archivo": "teatro-m-s3.json", "titulo": "teatro-m · semilla 3 (jev + narrativa, con dado cargado)", "detalle": ""},
+  {"archivo": "reflejo-s5.json", "titulo": "reflejo · semilla 5 (sin IA, línea base)", "detalle": ""}
 ]

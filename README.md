@@ -41,7 +41,7 @@ To watch it live, from the `proteus` folder:
 ODE_LIBRARY_PATH=$PWD/native/libode.so dart run bin/en_vivo.dart
 ```
 
-The code and its comments are in Spanish. The interface is in English.
+The code, its comments and the interface are in Spanish.
 
 ## License
 
