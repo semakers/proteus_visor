@@ -139,6 +139,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.22.2"
+  flutter_scene_ode_core:
+    dependency: transitive
+    description:
+      name: flutter_scene_ode_core
+      sha256: ea16b3f7b5dd183088da4dd96e8f33ebe0d14d35439e2e0d4bf9fef8e536938b
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -247,13 +255,6 @@ packages:
       relative: true
     source: path
     version: "0.1.0"
-  proteus_ode:
-    dependency: transitive
-    description:
-      path: "../proteus/third_party/proteus_ode"
-      relative: true
-    source: path
-    version: "0.5.1"
   pub_semver:
     dependency: transitive
     description:
