@@ -26,10 +26,9 @@ const double _densidadObjetivo = 1.3;
 final class EscenaProteus {
   EscenaProteus(this.g) {
     _luz();
-    _rocas();
-    _alimento();
     _ameba();
     _rehacerSuelo(0, 0);
+    _sincronizar();
   }
 
   final Grabacion g;
@@ -78,26 +77,29 @@ final class EscenaProteus {
         ..roughnessFactor = rugosidad
         ..alphaMode = a < 1 ? AlphaMode.blend : AlphaMode.opaque;
 
-  void _rocas() {
-    final mat = _mate(0.42, 0.39, 0.36, rugosidad: 0.95);
-    for (final r in g.rocas) {
+  // En vivo, las rocas y el alimento van llegando: se crean los nodos de lo
+  // que la escena aún no tiene.
+  int _rocasPuestas = 0;
+  final _matRoca = _mate(0.42, 0.39, 0.36, rugosidad: 0.95);
+  final _geoAlimento = SphereGeometry(radius: 0.32, segments: 12, rings: 8);
+  final _matAlimento = _mate(0.55, 0.85, 0.25, rugosidad: 0.5);
+
+  void _sincronizar() {
+    for (; _rocasPuestas < g.rocas.length; _rocasPuestas++) {
+      final r = g.rocas[_rocasPuestas];
       // La física usa un cilindro de semialtura 1 centrado en y = 1.
       scene.add(Node(name: 'roca')
         ..localTransform = vm.Matrix4.translation(vm.Vector3(r.x, 1, r.z))
         ..mesh = Mesh(
             CylinderGeometry(
                 bottomRadius: r.radio, topRadius: r.radio * 0.82, height: 2),
-            mat));
+            _matRoca));
     }
-  }
-
-  void _alimento() {
-    final geo = SphereGeometry(radius: 0.32, segments: 12, rings: 8);
-    final mat = _mate(0.55, 0.85, 0.25, rugosidad: 0.5);
     for (final a in g.alimentos) {
+      if (_nodosAlimento.containsKey(a.id)) continue;
       final n = Node(name: 'alimento-${a.id}')
         ..localTransform = vm.Matrix4.translation(vm.Vector3(a.x, 0.32, a.z))
-        ..mesh = Mesh(geo, mat)
+        ..mesh = Mesh(_geoAlimento, _matAlimento)
         ..visible = false;
       _nodosAlimento[a.id] = n;
       scene.add(n);
@@ -211,7 +213,9 @@ final class EscenaProteus {
   // --- a cada instante ---------------------------------------------------
 
   /// Pone la escena en el instante [t] (interpolando entre cuadros).
-  Cuadro poner(double t) {
+  Cuadro? poner(double t) {
+    _sincronizar();
+    if (g.cuadros.isEmpty) return null;
     final i = g.indiceEn(t);
     final a = g.cuadros[i];
     final b = i + 1 < g.cuadros.length ? g.cuadros[i + 1] : a;

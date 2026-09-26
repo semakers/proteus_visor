@@ -17,6 +17,7 @@ dependencies:
   # El de pub.dev, como en el spike de Nairda (el fork de Nairda no se toca).
   flutter_scene: ^0.22.2
   vector_math: ^2.2.0
+  web_socket_channel: ^3.0.0
   # Solo `package:proteus/visor.dart`: la grabación en Dart puro.
   proteus:
     path: ..
