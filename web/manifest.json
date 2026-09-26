@@ -1,11 +1,11 @@
 {
-    "name": "proteus_visor",
-    "short_name": "proteus_visor",
+    "name": "Proteus",
+    "short_name": "Proteus",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Proteus: a simulated amoeba with a Cartesian theatre.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

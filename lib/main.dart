@@ -15,7 +15,7 @@ import 'en_vivo.dart';
 import 'escena_proteus.dart';
 
 const _entradaVivo = EntradaIndice('__vivo__',
-    '🔴 En vivo: la simulación corre ahora mismo', '');
+    '🔴 Live: the simulation is running right now', '');
 
 void main() => runApp(const VisorApp());
 
@@ -109,7 +109,10 @@ class _PantallaVisorState extends State<PantallaVisor> {
       if (_indice.isNotEmpty) await _cargar(_indice.first);
       // Enlace directo: ?iniciar=teatro-m&semilla=3&segundos=120
       final q = Uri.base.queryParameters;
-      if (vivo != null && q['iniciar'] != null && !vivo.corriendo) {
+      if (vivo != null &&
+          !vivo.publico &&
+          q['iniciar'] != null &&
+          !vivo.corriendo) {
         _cerebroVivo = q['iniciar']!;
         _semillaVivo = int.tryParse(q['semilla'] ?? '') ?? _semillaVivo;
         _segundosVivo = double.tryParse(q['segundos'] ?? '') ?? _segundosVivo;
@@ -260,8 +263,8 @@ class _PantallaVisorState extends State<PantallaVisor> {
           else
             Center(
                 child: Text(_recursosListos
-                    ? 'Cargando grabación…'
-                    : 'Preparando la escena 3D…')),
+                    ? 'Loading recording…'
+                    : 'Preparing the 3D scene…')),
           if (g != null) ..._hud(context, g),
         ]),
       ),
@@ -320,13 +323,13 @@ class _PantallaVisorState extends State<PantallaVisor> {
                   Text('t = ${_t.toStringAsFixed(1)} s',
                       style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 6),
-                  _Barra('Energía', c.energia, const Color(0xFF8BC34A)),
+                  _Barra('Energy', c.energia, const Color(0xFF8BC34A)),
                   _BarraTemperatura(c.temperatura),
-                  _Barra('Integridad', c.integridad, const Color(0xFF4FC3F7)),
+                  _Barra('Integrity', c.integridad, const Color(0xFF4FC3F7)),
                   _Barra('Homeostasis', c.homeostasis, const Color(0xFFCE93D8)),
                   const SizedBox(height: 6),
                   Row(children: [
-                    const Text('Pseudópodos: ',
+                    const Text('Pseudopods: ',
                         style: TextStyle(color: Colors.white70)),
                     Flexible(
                       child: Chip(
@@ -361,12 +364,12 @@ class _PantallaVisorState extends State<PantallaVisor> {
             if (muerta)
               _Panel(
                 color: const Color(0xCC7A1F1F),
-                child: Text('Murió de ${g.causaDeMuerte} a los '
+                child: Text('Died of ${_causa(g.causaDeMuerte)} after '
                     '${g.duracion.toStringAsFixed(0)} s'),
               ),
             if (_modoVivo && (_vivo?.teatroPensando ?? false))
               const _Panel(
-                child: Text('🎭 el teatro está escribiendo…',
+                child: Text('🎭 the theatre is writing…',
                     style: TextStyle(color: Colors.white70)),
               ),
             AnimatedSwitcher(
@@ -415,7 +418,7 @@ class _PantallaVisorState extends State<PantallaVisor> {
                       _seguirBorde = true;
                       _reproduciendo = true;
                     }),
-                    child: Text(_seguirBorde ? '● vivo' : '⏩ al vivo',
+                    child: Text(_seguirBorde ? '● live' : '⏩ go live',
                         style: TextStyle(
                             color: _seguirBorde ? Colors.redAccent : null)),
                   ),
@@ -442,6 +445,25 @@ class _PantallaVisorState extends State<PantallaVisor> {
   Widget _controlesVivo() {
     final v = _vivo!;
     final corriendo = v.corriendo;
+    if (v.publico) {
+      final String texto;
+      if (!v.conectado) {
+        texto = 'No connection to the server. The recordings are still in the '
+            'list above.';
+      } else if (v.agotado && !corriendo) {
+        texto = 'The live amoeba is resting until tomorrow: every minute costs '
+            'calls to jev and DeepSeek. Meanwhile, pick a recording from the '
+            'list above.';
+      } else if (!corriendo) {
+        texto = 'Preparing the next amoeba…';
+      } else {
+        texto = 'Live demo: the amoeba is running on a server right now. jev '
+            'decides every move and DeepSeek narrates its state. Everyone who '
+            'opens this page watches the same amoeba.';
+      }
+      return _Panel(
+          child: Text(texto, style: const TextStyle(color: Colors.white70)));
+    }
     return _Panel(
       child: Wrap(
         spacing: 10,
@@ -466,7 +488,7 @@ class _PantallaVisorState extends State<PantallaVisor> {
             underline: const SizedBox.shrink(),
             items: [
               for (var i = 1; i <= 15; i++)
-                DropdownMenuItem(value: i, child: Text('semilla $i')),
+                DropdownMenuItem(value: i, child: Text('seed $i')),
             ],
             onChanged: corriendo
                 ? null
@@ -493,12 +515,12 @@ class _PantallaVisorState extends State<PantallaVisor> {
                 ? null
                 : () => v.iniciar(_cerebroVivo, _semillaVivo, _segundosVivo),
             icon: const Icon(Icons.play_arrow),
-            label: Text(corriendo ? 'corriendo…' : 'Iniciar'),
+            label: Text(corriendo ? 'running…' : 'Start'),
           ),
           if (!v.conectado)
-            const Text('sin conexión', style: TextStyle(color: Colors.redAccent)),
+            const Text('no connection', style: TextStyle(color: Colors.redAccent)),
           if (v.g == null && !corriendo)
-            const Text('elige y pulsa Iniciar',
+            const Text('pick and press Start',
                 style: TextStyle(color: Colors.white70)),
         ],
       ),
@@ -506,12 +528,12 @@ class _PantallaVisorState extends State<PantallaVisor> {
   }
 
   static String _nombreAccion(Accion a) => switch (a) {
-        Accion.avanzar => 'avanzar',
-        Accion.girarIzquierda => 'girar ←',
-        Accion.girarDerecha => 'girar →',
-        Accion.retroceder => 'retroceder',
-        Accion.quieto => 'quieta',
-        Accion.comer => 'comer 🍽',
+        Accion.avanzar => 'forward',
+        Accion.girarIzquierda => 'turn ←',
+        Accion.girarDerecha => 'turn →',
+        Accion.retroceder => 'back up',
+        Accion.quieto => 'still',
+        Accion.comer => 'eat 🍽',
       };
 }
 
@@ -530,8 +552,8 @@ class _PanelDado extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
             d.probabilidades.isEmpty
-                ? '🎲 decisión (sin dado)'
-                : '🎲 el dado de jev · ${d.ms} ms',
+                ? '🎲 decision (no die)'
+                : '🎲 jev\'s die · ${d.ms} ms',
             style: const TextStyle(fontSize: 12, color: Colors.white70)),
         const SizedBox(height: 4),
         for (final a in orden)
@@ -542,7 +564,7 @@ class _PanelDado extends StatelessWidget {
                 SizedBox(
                   width: 92,
                   child: Text(
-                    '${a.id == d.accion ? '▶ ' : ''}${a.id.replaceAll('_', ' ')}',
+                    '${a.id == d.accion ? '▶ ' : ''}${_accionIngles(a.id)}',
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 11,
@@ -576,7 +598,7 @@ class _PanelDado extends StatelessWidget {
               ]),
             ),
         if (d.ganadora != null && d.ganadora != d.accion)
-          Text('la ganadora era ${d.ganadora!.replaceAll('_', ' ')}; salió otra',
+          Text('the favourite was ${_accionIngles(d.ganadora!)}; the die chose another',
               style: const TextStyle(fontSize: 10, color: Colors.white54)),
       ]),
     );
@@ -641,7 +663,7 @@ class _BarraTemperatura extends StatelessWidget {
       child: Row(children: [
         const SizedBox(
             width: 92,
-            child: Text('Temperatura',
+            child: Text('Temperature',
                 style: TextStyle(fontSize: 12, color: Colors.white70))),
         Expanded(
           child: LayoutBuilder(builder: (context, box) {
@@ -681,3 +703,22 @@ class _BarraTemperatura extends StatelessWidget {
     );
   }
 }
+
+/// The simulation core names things in Spanish; the viewer speaks English.
+String _accionIngles(String id) => switch (id) {
+      'avanzar' => 'forward',
+      'girar_izquierda' => 'turn left',
+      'girar_derecha' => 'turn right',
+      'retroceder' => 'back up',
+      'quieto' => 'still',
+      'comer' => 'eat',
+      _ => id.replaceAll('_', ' '),
+    };
+
+String _causa(String? c) => switch (c) {
+      'inanición' => 'starvation',
+      'aplastamiento' => 'crushing',
+      'calor' => 'heat',
+      'frío' => 'cold',
+      _ => c ?? '?',
+    };

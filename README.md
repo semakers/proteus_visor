@@ -1,32 +1,48 @@
 # proteus_visor
 
-Visor 3D de la **Proteus** (la ameba del teatro cartesiano), en Flutter web
-con [flutter_scene](https://pub.dev/packages/flutter_scene) 0.22.
+The 3D viewer of [Proteus](https://github.com/semakers/proteus), the simulated
+amoeba with a Cartesian theatre. It is a Flutter web app built with
+[flutter_scene](https://pub.dev/packages/flutter_scene).
 
-- **Grabaciones**: reproduce los `grabacion.json` que escribe la simulación
-  de consola (`assets/grabaciones/` + `indice.json`).
-- **En vivo**: si lo sirve `bin/en_vivo.dart` del repo `proteus`, se conecta
-  por WebSocket y muestra la simulación mientras ocurre, con el dado de jev
-  y la narrativa del teatro. Las llaves de jev y DeepSeek nunca llegan al
-  navegador.
+**Live demo: https://proteus.nairda-back.com**
 
-## Estructura esperada
+![Proteus in the viewer](https://raw.githubusercontent.com/semakers/proteus/main/doc/proteus.gif)
+
+It shows the amoeba, its internal gauges, the probabilities of jev's loaded
+die and the narrative the theatre writes. It works in two modes:
+
+- **Recordings.** It replays the `grabacion.json` files written by the
+  console simulation, listed in `assets/grabaciones/indice.json`.
+- **Live.** When the page is served by `bin/en_vivo.dart` from the Proteus
+  repository, it connects over a WebSocket and shows the simulation as it
+  happens. The API keys for jev and DeepSeek never reach the browser.
+
+## Layout
+
+The viewer depends on the Proteus core by path, so both repositories go side
+by side:
 
 ```
-~/dev/proteus         # el núcleo (este visor depende de él por path)
-~/dev/proteus_visor   # este repo
+proteus/         # the simulation
+proteus_visor/   # this repository
 ```
 
-## Compilar
+## Build
 
-flutter_scene 0.22 exige Flutter ≥ 3.47 estable.
+flutter_scene needs Flutter 3.47 or newer.
 
 ```bash
-LANG=en_US.UTF-8 flutter build web --release --no-web-resources-cdn --no-wasm-dry-run
+flutter build web --release --no-wasm-dry-run
 ```
 
-Y para verlo en vivo, desde `~/dev/proteus`:
+To watch it live, from the `proteus` folder:
 
 ```bash
 ODE_LIBRARY_PATH=$PWD/native/libode.so dart run bin/en_vivo.dart
 ```
+
+The code and its comments are in Spanish. The interface is in English.
+
+## License
+
+BSD 3-Clause. See [LICENSE](LICENSE).

@@ -31,6 +31,12 @@ class ConexionEnVivo extends ChangeNotifier {
 
   bool conectado = false;
   bool corriendo = false;
+
+  /// La demo abierta: el servidor elige y encadena las corridas solo.
+  bool publico = false;
+
+  /// En la demo abierta, si ya se gastó el tope de minutos en vivo de hoy.
+  bool agotado = false;
   bool teatroPensando = false;
   String? error;
   Grabacion? g;
@@ -102,6 +108,8 @@ class ConexionEnVivo extends ChangeNotifier {
     switch (m['tipo']) {
       case 'hola':
         corriendo = m['corriendo'] == true;
+        publico = m['publico'] == true;
+        agotado = m['agotado'] == true;
       case 'inicio':
         g = Grabacion.enVivo(
           cerebro: m['cerebro'] as String,

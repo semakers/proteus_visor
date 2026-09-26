@@ -1,8 +1,7 @@
 name: proteus_visor
 description: >-
-  Visor 3D de la Proteus: reproduce las grabaciones de la simulación de
-  consola con flutter_scene (el suelo pintado por temperatura, las rocas, el
-  alimento, la ameba con sus pseudópodos y la narrativa del teatro).
+  3D viewer of Proteus, the simulated amoeba with a Cartesian theatre: replays
+  recorded runs and streams live ones, with flutter_scene.
 publish_to: none
 version: 0.1.0
 
