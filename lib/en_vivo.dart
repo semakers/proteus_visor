@@ -64,6 +64,10 @@ class ConexionEnVivo extends ChangeNotifier {
   /// La URL del WebSocket del servidor que sirvió la página, si lo hay.
   static Uri? urlDesde(Uri base) {
     if (base.scheme != 'http' && base.scheme != 'https') return null;
+    // En nairda.com.mx/proteus el visor es estático: el vivo está en la demo.
+    if (base.host == 'nairda.com.mx' || base.host == 'www.nairda.com.mx') {
+      return Uri.parse('wss://proteus.nairda-back.com/ws');
+    }
     return base.replace(
         scheme: base.scheme == 'https' ? 'wss' : 'ws', path: '/ws', query: '');
   }
